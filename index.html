@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>NoteYou — Kanban Offline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --primary: #6366f1;
+  --border: #e5e7eb;
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --border: #1e293b;
+}
+* { box-sizing: border-box; font-family: system-ui, sans-serif; }
+body { margin:0; background:var(--bg); color:var(--text); }
+
+header {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+}
+
+header input, header select {
+  padding:8px;
+  border-radius:6px;
+  border:1px solid var(--border);
+}
+
+header button {
+  padding:8px 12px;
+  border:none;
+  border-radius:6px;
+  background:var(--primary);
+  color:#fff;
+  cursor:pointer;
+}
+
+.kanban { display:flex; gap:16px; padding:16px; overflow-x:auto; }
+.column { min-width:260px; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px; }
+.column h3 { margin:0 0 10px; color:var(--text); }
+
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:8px;
+  cursor:grab;
+  position: relative;
+}
+.card small { display:block; opacity:.7; }
+.card .actions { position: absolute; top: 5px; right: 5px; display: none; }
+.card:hover .actions { display: block; }
+.card .actions button { background: none; border: none; cursor: pointer; font-size: 12px; }
+
+.dragging { opacity:.4; }
+.dropzone-hover { outline:2px dashed var(--primary); }
+
+#stats { padding:10px; font-size:14px; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <input id="taskInput" placeholder="Nova tarefa">
+  <input id="teamInput" placeholder="Time">
+
+  <select id="ownerSelect">
+    <option value="">Responsável</option>
+  </select>
+
+  <input id="newCollaborator" placeholder="Novo colaborador">
+  <button onclick="addCollaborator()">+</button>
+
+  <select id="filterSelect" onchange="setFilter(this.value)">
+    <option value="all">Todos</option>
+  </select>
+
+  <button onclick="addTask()">Adicionar</button>
+  <button onclick="toggleTheme()">🌙</button>
+</header>
+
+<div id="stats"></div>
+<div class="kanban" id="kanban"></div>
+
+<script>
+const KEY = 'noteyou_state';
+
+const defaultState = {
+  theme: 'light',
+  filter: 'all',
+  collaborators: [],
+  columns: {
+    todo: { title: 'A Fazer', cards: [] },
+    analysis: { title: 'Em Análise', cards: [] },
+    progress: { title: 'Em Progresso', cards: [] },
+    done: { title: 'Feito', cards: [] }
+  }
+};
+
+let state = JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaultState);
+
+// 🔒 Migração segura (não apaga tarefas antigas)
+if (!state.collaborators) state.collaborators = [];
+for (const key in defaultState.columns) {
+  if (!state.columns[key]) {
+    state.columns[key] = structuredClone(defaultState.columns[key]);
+  }
+}
+
+// Remove coluna antiga "delegate" se existir
+if (state.columns.delegate) {
+  delete state.columns.delegate;
+}
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+function setFilter(value) {
+  state.filter = value;
+  render();
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  save();
+  render();
+}
+
+function addCollaborator() {
+  const input = document.getElementById('newCollaborator');
+  const name = input.value.trim();
+  if (!name || state.collaborators.includes(name)) return;
+  state.collaborators.push(name);
+  input.value = '';
+  save();
+  render();
+}
+
+function addTask() {
+  const text = document.getElementById('taskInput').value.trim();
+  const team = document.getElementById('teamInput').value.trim();
+  if (!text) return;
+
+  state.columns.todo.cards.push({
+    id: crypto.randomUUID(),
+    text,
+    owner: document.getElementById('ownerSelect').value || '—',
+    team: team || '—'
+  });
+
+  document.getElementById('taskInput').value = '';
+  document.getElementById('teamInput').value = '';
+  save();
+  render();
+}
+
+function editCard(id, columnId) {
+  const card = state.columns[columnId].cards.find(c => c.id === id);
+  if (!card) return;
+  const newText = prompt('Editar tarefa:', card.text);
+  if (newText !== null && newText.trim()) {
+    card.text = newText.trim();
+    save();
+    render();
+  }
+}
+
+function deleteCard(id, columnId) {
+  if (!confirm('Tem certeza que deseja deletar esta tarefa?')) return;
+  state.columns[columnId].cards = state.columns[columnId].cards.filter(c => c.id !== id);
+  save();
+  render();
+}
+
+function render() {
+  document.documentElement.dataset.theme = state.theme;
+
+  const kb = document.getElementById('kanban');
+  kb.innerHTML = '';
+
+  let stats = {};
+  const owners = new Set();
+
+  // Coletar todos os owners de todos os cards, independentemente do filtro
+  for (const col of Object.values(state.columns)) {
+    col.cards.forEach(c => owners.add(c.owner));
+  }
+
+  for (const id in state.columns) {
+    const col = state.columns[id];
+    stats[id] = col.cards.length;
+
+    const div = document.createElement('div');
+    div.className = 'column ' + id;
+    div.innerHTML = `<h3>${col.title}</h3>`;
+
+    div.ondragover = e => e.preventDefault();
+    div.ondragenter = () => div.classList.add('dropzone-hover');
+    div.ondragleave = () => div.classList.remove('dropzone-hover');
+    div.ondrop = e => drop(e, id);
+
+    col.cards
+      .filter(c => state.filter === 'all' || c.owner === state.filter)
+      .forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.draggable = true;
+        card.dataset.id = c.id;
+        card.innerHTML = `
+          <strong>${c.text}</strong>
+          <small>👤 ${c.owner}</small>
+          <small>👥 ${c.team}</small>
+          <div class="actions">
+            <button onclick="editCard('${c.id}', '${id}')">✏️</button>
+            <button onclick="deleteCard('${c.id}', '${id}')">🗑️</button>
+          </div>
+        `;
+
+        card.ondragstart = e => {
+          card.classList.add('dragging');
+          e.dataTransfer.setData('application/json', JSON.stringify({ id: c.id, from: id }));
+        };
+        card.ondragend = () => card.classList.remove('dragging');
+
+        div.appendChild(card);
+      });
+
+    kb.appendChild(div);
+  }
+
+  // Responsáveis
+  const ownerSelect = document.getElementById('ownerSelect');
+  ownerSelect.innerHTML = '<option value="">Responsável</option>';
+  state.collaborators.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    ownerSelect.appendChild(opt);
+  });
+
+  // Filtro
+  const filter = document.getElementById('filterSelect');
+  const current = state.filter;
+  filter.innerHTML = '<option value="all">Todos</option>';
+  owners.forEach(o => {
+    if (o !== '—') { // Não incluir '—' no filtro
+      const opt = document.createElement('option');
+      opt.value = o;
+      opt.textContent = o;
+      if (o === current) opt.selected = true;
+      filter.appendChild(opt);
+    }
+  });
+
+  document.getElementById('stats').innerText =
+    Object.entries(stats)
+      .map(([k, v]) => `${state.columns[k].title}: ${v}`)
+      .join(' | ');
+}
+
+function drop(e, target) {
+  e.preventDefault();
+  const data = JSON.parse(e.dataTransfer.getData('application/json'));
+  const { id, from } = data;
+
+  if (from === target) return; // Impede mover para a mesma coluna
+
+  const item = state.columns[from].cards.find(c => c.id === id);
+  if (!item) return;
+
+  state.columns[from].cards = state.columns[from].cards.filter(c => c.id !== id);
+  state.columns[target].cards.push(item);
+  save();
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
