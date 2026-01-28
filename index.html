@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>NoteYou 3.0 Beta 03</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Gerenciador de tarefas Kanban completo com notas">
+<meta name="theme-color" content="#0066ff">
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk5vdGVZb3UgMy4wIiwKICAic2hvcnRfbmFtZSI6ICJOb3RlWW91IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmYWZiZmMiLAogICJ0aGVtZV9jb2xvciI6ICIjMDA2NmZmIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0UlRjAlOUYlOTMlOEIlM0MvdGV4dCUzRSUzQy9zdmclM0UiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root {
+  --bg: #f8f9fb;
+  --bg-secondary: #eef1f6;
+  --card: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: #dbeafe;
+  --border: #e2e8f0;
+  --shadow: rgba(15, 23, 42, 0.04);
+  --shadow-hover: rgba(15, 23, 42, 0.12);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #06b6d4;
+  --high: #dc2626;
+  --medium: #f59e0b;
+  --low: #10b981;
+  --radius: 16px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-hover: rgba(0, 0, 0, 0.5);
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --primary-light: #1e3a8a;
+}
+
+* { 
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+}
+
+body { 
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  grid-row: 1 / -1;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px var(--shadow);
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo::before {
+  content: '◆';
+  font-size: 28px;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sidebar-section {
+  padding: 16px;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  padding: 0 12px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-item:hover {
+  background: var(--bg-secondary);
+  transform: translateX(4px);
+}
+
+.sidebar-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sidebar-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.board-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.sidebar-item:hover .board-actions {
+  opacity: 1;
+}
+
+.board-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  font-size: 12px;
+}
+
+.board-btn:hover {
+  background: var(--card);
+  color: var(--danger);
+}
+
+.add-board-btn {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  text-align: center;
+}
+
+.add-board-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ===== HEADER ===== */
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px var(--shadow);
+  z-index: 50;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.board-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+  white-space: nowrap;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  padding: 10px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  min-width: 40px;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 14px;
+  color: var(--text);
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  overflow: hidden;
+  position: relative;
+}
+
+.view {
+  display: none;
+  height: 100%;
+  overflow: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  background: var(--card);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stat-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* ===== KANBAN ===== */
+.kanban-container {
+  padding: 24px;
+  height: 100%;
+  overflow-x: auto;
+}
+
+.kanban { 
+  display: flex; 
+  gap: 24px;
+  min-height: 100%;
+  align-items: flex-start;
+}
+
+.column { 
+  min-width: 320px;
+  max-width: 320px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 200px);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.column-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.column-cards {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.column-cards::-webkit-scrollbar {
+  width: 6px;
+}
+
+.column-cards::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.column-cards::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: grab;
+  position: relative;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px var(--shadow);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px var(--shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+
+.card.dragging { 
+  opacity: 0.5;
+  cursor: grabbing;
+  transform: rotate(3deg);
+}
+
+.card-priority {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 12px 0 0 12px;
+}
+
+.card-priority.high { background: var(--high); }
+.card-priority.medium { background: var(--medium); }
+.card-priority.low { background: var(--low); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  flex: 1;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.card-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.card:hover .card-actions {
+  opacity: 1;
+}
+
+.card-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--transition);
+  color: var(--text);
+}
+
+.card-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.card-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.card-checklist {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.checklist-progress {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.checklist-progress-bar {
+  height: 100%;
+  background: var(--success);
+  transition: width 0.3s ease;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.checklist-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checklist-item.completed label {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.tag {
+  background: var(--bg-secondary);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.card-dates {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card.overdue {
+  border-color: var(--danger);
+  background: linear-gradient(to bottom, var(--card), rgba(239, 68, 68, 0.05));
+}
+
+.overdue-badge {
+  background: var(--danger);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.card-comments {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.comment {
+  background: var(--bg);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.comment-text {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.comment-date {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* ===== ANALYTICS ===== */
+.analytics-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.analytics-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.analytics-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+/* ===== NOTES ===== */
+.notes-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+
+.notes-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.notes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.note-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px var(--shadow);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-item:hover {
+  box-shadow: 0 8px 20px var(--shadow-hover);
+  transform: translateY(-4px);
+  border-color: var(--primary);
+}
+
+.note-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.note-item-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.3;
+}
+
+.note-item-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.note-item:hover .note-item-actions {
+  opacity: 1;
+}
+
+.note-item-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.note-item-preview {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  flex: 1;
+}
+
+.note-editor {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: 0 4px 20px var(--shadow);
+  animation: slideIn 0.3s ease;
+}
+
+.note-editor.active {
+  display: block;
+}
+
+.note-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.note-title-input {
+  flex: 1;
+  font-size: 32px;
+  font-weight: 800;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 12px 0;
+  border-bottom: 3px solid transparent;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.note-title-input:focus {
+  outline: none;
+  border-bottom-color: var(--primary);
+}
+
+.note-title-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.4;
+}
+
+.note-content {
+  min-height: 500px;
+  font-size: 16px;
+  line-height: 1.8;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  resize: vertical;
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--bg);
+  font-family: inherit;
+  border: 1px solid var(--border);
+}
+
+.note-content:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.note-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ===== MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-close {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text);
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input, .form-select, .form-textarea {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.priority-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.priority-btn {
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.priority-btn:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.priority-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.priority-btn.high.active { border-color: var(--high); background: var(--high); }
+.priority-btn.medium.active { border-color: var(--medium); background: var(--medium); }
+.priority-btn.low.active { border-color: var(--low); background: var(--low); }
+
+.checklist-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item-editor {
+  display: flex;
+  gap: 8px;
+}
+
+.checklist-item-editor input {
+  flex: 1;
+}
+
+.add-checklist-btn {
+  padding: 8px;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.add-checklist-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
+}
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.empty-text {
+  font-size: 15px;
+}
+
+/* ===== DROPZONE ===== */
+.dropzone-hover {
+  outline: 3px dashed var(--primary);
+  outline-offset: -6px;
+  background: var(--primary-light);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 24px var(--shadow-hover);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.toast.show {
+  display: flex;
+}
+
+.toast-icon {
+  font-size: 24px;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.toast-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 18px;
+  padding: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    display: none;
+  }
+  
+  .kanban {
+    flex-direction: column;
+  }
+  
+  .column {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    max-width: 100%;
+  }
+  
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notes-list {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">NoteYou 3.0</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Workspace</div>
+      <div class="sidebar-menu">
+        <button class="sidebar-item" onclick="switchView('kanban')">
+          <span class="sidebar-icon">📋</span>
+          <span>Kanban</span>
+        </button>
+        <button class="sidebar-item" onclick="switchView('analytics')">
+          <span class="sidebar-icon">📊</span>
+          <span>Analytics</span>
+        </button>
+        <button class="sidebar-item" onclick="switchView('notes')">
+          <span class="sidebar-icon">📝</span>
+          <span>Notas</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Boards</div>
+      <div class="sidebar-menu" id="boardsList"></div>
+      <button class="add-board-btn" onclick="createBoard()">+ Novo Board</button>
+    </div>
+
+    <div class="sidebar-section" style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border);">
+      <button class="sidebar-item" onclick="toggleTheme()">
+        <span class="sidebar-icon">🌙</span>
+        <span>Tema</span>
+      </button>
+      <button class="sidebar-item" onclick="exportData()">
+        <span class="sidebar-icon">💾</span>
+        <span>Exportar</span>
+      </button>
+      <button class="sidebar-item" onclick="importData()">
+        <span class="sidebar-icon">📥</span>
+        <span>Importar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="display: contents;">
+    <!-- HEADER -->
+    <header>
+      <div class="header-left">
+        <div class="board-name" id="currentBoardName">Meu Projeto</div>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar tarefas... (Ctrl+F)" oninput="applyFilters()">
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn" onclick="openAddTaskModal()">
+          <span>+</span>
+          <span>Nova Tarefa</span>
+        </button>
+        <button class="btn-icon" onclick="toggleTheme()">🌙</button>
+        <button class="btn-icon" onclick="exportData()">💾</button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- KANBAN VIEW -->
+      <div id="kanban-view" class="view active">
+        <div class="stats-bar" id="statsBar"></div>
+        
+        <div class="kanban-container">
+          <div class="kanban" id="kanban"></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS VIEW -->
+      <div id="analytics-view" class="view">
+        <div class="analytics-container">
+          <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 24px;">📊 Analytics</h2>
+          
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <div class="analytics-title">📈 Tarefas por Status</div>
+              <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-title">👥 Tarefas por Responsável</div>
+              <div class="chart-container">
+                <canvas id="ownerChart"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-title">🎯 Prioridades</div>
+              <div class="chart-container">
+                <canvas id="priorityChart"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-title">📅 Tarefas por Semana</div>
+              <div class="chart-container">
+                <canvas id="weekChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <div class="analytics-title">⚡ Velocidade</div>
+              <div style="font-size: 48px; font-weight: 800; color: var(--primary); text-align: center; margin: 40px 0;">
+                <span id="velocityStat">0</span>
+                <div style="font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-top: 8px;">
+                  tarefas/semana
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-title">⏱️ Lead Time Médio</div>
+              <div style="font-size: 48px; font-weight: 800; color: var(--success); text-align: center; margin: 40px 0;">
+                <span id="leadTimeStat">0</span>
+                <div style="font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-top: 8px;">
+                  dias
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-card">
+              <div class="analytics-title">✅ Taxa de Conclusão</div>
+              <div style="font-size: 48px; font-weight: 800; color: var(--warning); text-align: center; margin: 40px 0;">
+                <span id="completionRate">0%</span>
+                <div style="font-size: 14px; color: var(--text-secondary); font-weight: 600; margin-top: 8px;">
+                  das tarefas
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTES VIEW -->
+      <div id="notes-view" class="view">
+        <div class="notes-container">
+          <div class="notes-header">
+            <h1 class="notes-title">📝 Minhas Notas</h1>
+            <button class="btn" onclick="createNote()">+ Nova Nota</button>
+          </div>
+
+          <div id="notesList" class="notes-list"></div>
+
+          <div id="noteEditor" class="note-editor">
+            <div class="note-editor-header">
+              <input type="text" id="noteTitleInput" class="note-title-input" placeholder="Título da nota...">
+              <div style="display: flex; gap: 12px;">
+                <button class="btn" onclick="saveNote()">💾 Salvar</button>
+                <button class="btn-secondary btn" onclick="closeNoteEditor()">✕ Fechar</button>
+              </div>
+            </div>
+            <textarea id="noteContentInput" class="note-content" placeholder="Comece a escrever sua nota aqui...
+
+Dicas:
+- Use quebras de linha para organizar ideias
+- Escreva livremente, o salvamento é automático
+- Suas notas ficam salvas localmente"></textarea>
+            <div class="note-toolbar">
+              <span>Última edição: <strong id="noteLastEdited">-</strong></span>
+              <button class="btn-secondary btn" onclick="deleteCurrentNote()">🗑️ Deletar Nota</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div id="taskModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Nova Tarefa</h2>
+      <button class="modal-close" onclick="closeTaskModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título da Tarefa</label>
+        <input type="text" id="modalTaskInput" class="form-input" placeholder="Ex: Implementar autenticação">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <textarea id="modalDescriptionInput" class="form-textarea" placeholder="Adicione detalhes sobre a tarefa..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Prioridade</label>
+        <div class="priority-options">
+          <button class="priority-btn low" onclick="selectPriority('low')">🟢 Baixa</button>
+          <button class="priority-btn medium" onclick="selectPriority('medium')">🟡 Média</button>
+          <button class="priority-btn high" onclick="selectPriority('high')">🔴 Alta</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">Responsável</label>
+          <select id="modalOwnerSelect" class="form-select">
+            <option value="">Sem responsável</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="text" id="modalTeamInput" class="form-input" placeholder="Nome do time">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">Data de Vencimento</label>
+          <input type="date" id="modalDueDateInput" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <input type="text" id="modalTagsInput" class="form-input" placeholder="bug, feature, etc">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Checklist (Sub-tarefas)</label>
+        <div class="checklist-editor" id="checklistEditor">
+          <div class="checklist-item-editor">
+            <input type="text" class="form-input" placeholder="Item da checklist...">
+            <button class="btn-icon" onclick="removeChecklistItem(this)">🗑️</button>
+          </div>
+        </div>
+        <button class="add-checklist-btn" onclick="addChecklistItem()">+ Adicionar item</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Adicionar Colaborador</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="newCollaborator" class="form-input" placeholder="Nome do colaborador">
+          <button class="btn" onclick="addCollaborator()">Adicionar</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary btn" onclick="closeTaskModal()">Cancelar</button>
+      <button class="btn" onclick="saveTaskFromModal()">💾 Salvar Tarefa</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+  <span class="toast-icon">✅</span>
+  <div class="toast-content">
+    <div class="toast-title" id="toastTitle">Sucesso!</div>
+    <div class="toast-message" id="toastMessage">Operação realizada com sucesso</div>
+  </div>
+  <button class="toast-close" onclick="hideToast()">×</button>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
+
+<script>
+// ===== STATE MANAGEMENT =====
+const KEY = 'noteyou_v3_state';
+
+const defaultState = {
+  theme: 'light',
+  currentBoard: 'default',
+  searchQuery: '',
+  boards: {
+    default: {
+      id: 'default',
+      name: 'Meu Projeto',
+      collaborators: [],
+      columns: {
+        todo: { title: '📝 A Fazer', cards: [] },
+        progress: { title: '⚡ Em Progresso', cards: [] },
+        review: { title: '👀 Em Revisão', cards: [] },
+        done: { title: '✅ Feito', cards: [] }
+      }
+    }
+  },
+  notes: []
+};
+
+let state = JSON.parse(localStorage.getItem(KEY)) || structuredClone(defaultState);
+let editingCard = null;
+let modalPriority = 'low';
+let currentNoteId = null;
+let charts = {};
+
+// Migration
+if (!state.boards) state.boards = { default: defaultState.boards.default };
+if (!state.currentBoard) state.currentBoard = 'default';
+if (!state.notes) state.notes = [];
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+function getCurrentBoard() {
+  return state.boards[state.currentBoard];
+}
+
+function showToast(title, message, icon = '✅') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMessage').textContent = message;
+  document.querySelector('.toast-icon').textContent = icon;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function hideToast() {
+  document.getElementById('toast').classList.remove('show');
+}
+
+// ===== BOARD MANAGEMENT =====
+function createBoard() {
+  const name = prompt('Nome do novo board:');
+  if (!name || !name.trim()) return;
+  
+  const id = crypto.randomUUID();
+  state.boards[id] = {
+    id,
+    name: name.trim(),
+    collaborators: [],
+    columns: structuredClone(defaultState.boards.default.columns)
+  };
+  state.currentBoard = id;
+  save();
+  renderBoards();
+  render();
+  showToast('Board Criado!', `Board "${name}" criado com sucesso.`);
+}
+
+function switchBoard(boardId) {
+  state.currentBoard = boardId;
+  save();
+  render();
+  renderBoards();
+}
+
+function deleteBoard(boardId) {
+  if (Object.keys(state.boards).length === 1) {
+    alert('Você precisa ter pelo menos um board!');
+    return;
+  }
+  
+  const board = state.boards[boardId];
+  if (!confirm(`Deletar board "${board.name}"?`)) return;
+  
+  delete state.boards[boardId];
+  state.currentBoard = Object.keys(state.boards)[0];
+  save();
+  renderBoards();
+  render();
+  showToast('Board Deletado', 'Board removido com sucesso.', '🗑️');
+}
+
+function renderBoards() {
+  const container = document.getElementById('boardsList');
+  container.innerHTML = '';
+  
+  Object.values(state.boards).forEach(board => {
+    const item = document.createElement('button');
+    item.className = `sidebar-item ${board.id === state.currentBoard ? 'active' : ''}`;
+    item.innerHTML = `
+      <span class="sidebar-icon">📋</span>
+      <div class="board-item">
+        <span>${board.name}</span>
+        <div class="board-actions">
+          <button class="board-btn" onclick="event.stopPropagation(); deleteBoard('${board.id}')">🗑️</button>
+        </div>
+      </div>
+    `;
+    item.onclick = () => switchBoard(board.id);
+    container.appendChild(item);
+  });
+}
+
+// ===== VIEW MANAGEMENT =====
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(t => t.classList.remove('active'));
+  
+  document.getElementById(`${view}-view`).classList.add('active');
+  event.target.classList.add('active');
+  
+  if (view === 'notes') renderNotes();
+  if (view === 'analytics') renderAnalytics();
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  save();
+  document.documentElement.dataset.theme = state.theme;
+}
+
+// ===== FILTERS =====
+function applyFilters() {
+  state.searchQuery = document.getElementById('searchInput').value.toLowerCase();
+  render();
+}
+
+// ===== TASK MODAL =====
+function openAddTaskModal() {
+  editingCard = null;
+  modalPriority = 'low';
+  document.getElementById('modalTitle').textContent = 'Nova Tarefa';
+  document.getElementById('modalTaskInput').value = '';
+  document.getElementById('modalDescriptionInput').value = '';
+  document.getElementById('modalTeamInput').value = '';
+  document.getElementById('modalDueDateInput').value = '';
+  document.getElementById('modalTagsInput').value = '';
+  
+  // Clear checklist
+  const editor = document.getElementById('checklistEditor');
+  editor.innerHTML = `
+    <div class="checklist-item-editor">
+      <input type="text" class="form-input" placeholder="Item da checklist...">
+      <button class="btn-icon" onclick="removeChecklistItem(this)">🗑️</button>
+    </div>
+  `;
+  
+  const board = getCurrentBoard();
+  const select = document.getElementById('modalOwnerSelect');
+  select.innerHTML = '<option value="">Sem responsável</option>';
+  board.collaborators.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    select.appendChild(opt);
+  });
+  
+  document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector('.priority-btn.low').classList.add('active');
+  
+  document.getElementById('taskModal').classList.add('active');
+}
+
+function closeTaskModal() {
+  document.getElementById('taskModal').classList.remove('active');
+  editingCard = null;
+}
+
+function selectPriority(priority) {
+  modalPriority = priority;
+  document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.priority-btn.${priority}`).classList.add('active');
+}
+
+function addChecklistItem() {
+  const editor = document.getElementById('checklistEditor');
+  const div = document.createElement('div');
+  div.className = 'checklist-item-editor';
+  div.innerHTML = `
+    <input type="text" class="form-input" placeholder="Item da checklist...">
+    <button class="btn-icon" onclick="removeChecklistItem(this)">🗑️</button>
+  `;
+  editor.appendChild(div);
+}
+
+function removeChecklistItem(btn) {
+  const editor = document.getElementById('checklistEditor');
+  if (editor.children.length > 1) {
+    btn.parentElement.remove();
+  }
+}
+
+function addCollaborator() {
+  const input = document.getElementById('newCollaborator');
+  const name = input.value.trim();
+  const board = getCurrentBoard();
+  
+  if (!name || board.collaborators.includes(name)) {
+    showToast('Erro', 'Nome inválido ou já existe.', '❌');
+    return;
+  }
+  
+  board.collaborators.push(name);
+  input.value = '';
+  save();
+  
+  const select = document.getElementById('modalOwnerSelect');
+  const opt = document.createElement('option');
+  opt.value = name;
+  opt.textContent = name;
+  select.appendChild(opt);
+  
+  showToast('Colaborador Adicionado', `${name} foi adicionado ao projeto.`);
+}
+
+function saveTaskFromModal() {
+  const text = document.getElementById('modalTaskInput').value.trim();
+  if (!text) {
+    showToast('Erro', 'Digite o título da tarefa!', '❌');
+    return;
+  }
+
+  const owner = document.getElementById('modalOwnerSelect').value || '—';
+  const team = document.getElementById('modalTeamInput').value.trim() || '—';
+  const dueDate = document.getElementById('modalDueDateInput').value;
+  const tagsInput = document.getElementById('modalTagsInput').value.trim();
+  const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const description = document.getElementById('modalDescriptionInput').value.trim();
+  
+  // Get checklist items
+  const checklistInputs = document.querySelectorAll('#checklistEditor input');
+  const checklist = Array.from(checklistInputs)
+    .map(input => input.value.trim())
+    .filter(Boolean)
+    .map(text => ({ text, completed: false }));
+
+  const board = getCurrentBoard();
+
+  if (editingCard) {
+    editingCard.text = text;
+    editingCard.owner = owner;
+    editingCard.team = team;
+    editingCard.priority = modalPriority;
+    editingCard.dueDate = dueDate;
+    editingCard.tags = tags;
+    editingCard.description = description;
+    editingCard.checklist = checklist;
+    showToast('Tarefa Atualizada', 'As alterações foram salvas.');
+  } else {
+    const newCard = {
+      id: crypto.randomUUID(),
+      text,
+      description,
+      owner,
+      team,
+      priority: modalPriority,
+      dueDate: dueDate || null,
+      tags,
+      checklist,
+      comments: [],
+      createdAt: new Date().toISOString(),
+      movedAt: new Date().toISOString()
+    };
+    board.columns.todo.cards.push(newCard);
+    showToast('Tarefa Criada', 'Nova tarefa adicionada ao board!');
+  }
+
+  save();
+  render();
+  closeTaskModal();
+}
+
+function editCard(id, columnId) {
+  const board = getCurrentBoard();
+  const card = board.columns[columnId].cards.find(c => c.id === id);
+  if (!card) return;
+  
+  editingCard = card;
+  modalPriority = card.priority || 'low';
+  
+  document.getElementById('modalTitle').textContent = 'Editar Tarefa';
+  document.getElementById('modalTaskInput').value = card.text;
+  document.getElementById('modalDescriptionInput').value = card.description || '';
+  document.getElementById('modalTeamInput').value = card.team === '—' ? '' : card.team;
+  document.getElementById('modalDueDateInput').value = card.dueDate || '';
+  document.getElementById('modalTagsInput').value = (card.tags || []).join(', ');
+  
+  // Populate checklist
+  const editor = document.getElementById('checklistEditor');
+  editor.innerHTML = '';
+  (card.checklist || []).forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'checklist-item-editor';
+    div.innerHTML = `
+      <input type="text" class="form-input" value="${item.text}" placeholder="Item da checklist...">
+      <button class="btn-icon" onclick="removeChecklistItem(this)">🗑️</button>
+    `;
+    editor.appendChild(div);
+  });
+  
+  if (editor.children.length === 0) {
+    addChecklistItem();
+  }
+  
+  const select = document.getElementById('modalOwnerSelect');
+  select.innerHTML = '<option value="">Sem responsável</option>';
+  board.collaborators.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    if (c === card.owner) opt.selected = true;
+    select.appendChild(opt);
+  });
+  
+  document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.priority-btn.${modalPriority}`).classList.add('active');
+  
+  document.getElementById('taskModal').classList.add('active');
+}
+
+function deleteCard(id, columnId) {
+  if (!confirm('Deletar esta tarefa?')) return;
+  const board = getCurrentBoard();
+  board.columns[columnId].cards = board.columns[columnId].cards.filter(c => c.id !== id);
+  save();
+  render();
+  showToast('Tarefa Deletada', 'Tarefa removida com sucesso.', '🗑️');
+}
+
+function toggleChecklistItem(cardId, columnId, itemIndex) {
+  const board = getCurrentBoard();
+  const card = board.columns[columnId].cards.find(c => c.id === cardId);
+  if (!card || !card.checklist) return;
+  
+  card.checklist[itemIndex].completed = !card.checklist[itemIndex].completed;
+  save();
+  render();
+}
+
+// ===== UTILS =====
+function isOverdue(dueDate) {
+  if (!dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dueDate);
+  return due < today;
+}
+
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+}
+
+function formatDateTime(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleString('pt-BR', { 
+    day: '2-digit', 
+    month: 'short', 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+}
+
+// ===== RENDER KANBAN =====
+function render() {
+  document.documentElement.dataset.theme = state.theme;
+  
+  const board = getCurrentBoard();
+  document.getElementById('currentBoardName').textContent = board.name;
+
+  const kb = document.getElementById('kanban');
+  kb.innerHTML = '';
+
+  let totalCards = 0;
+  let overdueCount = 0;
+  let doneCount = 0;
+  const stats = {};
+
+  for (const id in board.columns) {
+    const col = board.columns[id];
+    const filteredCards = col.cards.filter(c => {
+      if (state.searchQuery) {
+        const searchLower = state.searchQuery.toLowerCase();
+        return c.text.toLowerCase().includes(searchLower) ||
+               (c.description || '').toLowerCase().includes(searchLower) ||
+               c.owner.toLowerCase().includes(searchLower) ||
+               c.team.toLowerCase().includes(searchLower) ||
+               (c.tags || []).some(t => t.toLowerCase().includes(searchLower));
+      }
+      return true;
+    });
+
+    stats[id] = filteredCards.length;
+    totalCards += col.cards.length;
+    if (id === 'done') doneCount = col.cards.length;
+    
+    col.cards.forEach(c => {
+      if (isOverdue(c.dueDate)) overdueCount++;
+    });
+
+    const div = document.createElement('div');
+    div.className = 'column';
+    
+    div.innerHTML = `
+      <div class="column-header">
+        <h3 class="column-title">${col.title}</h3>
+        <span class="count-badge">${filteredCards.length}</span>
+      </div>
+      <div class="column-cards"></div>
+    `;
+
+    const cardsContainer = div.querySelector('.column-cards');
+
+    div.ondragover = e => e.preventDefault();
+    div.ondragenter = () => div.classList.add('dropzone-hover');
+    div.ondragleave = () => div.classList.remove('dropzone-hover');
+    div.ondrop = e => drop(e, id);
+
+    if (filteredCards.length === 0) {
+      cardsContainer.innerHTML = `
+        <div class="empty-state" style="padding: 40px 20px;">
+          <div class="empty-icon">📭</div>
+          <div class="empty-text">Vazio</div>
+        </div>
+      `;
+    } else {
+      filteredCards.forEach(c => {
+        const card = document.createElement('div');
+        card.className = `card ${isOverdue(c.dueDate) ? 'overdue' : ''}`;
+        card.draggable = true;
+        card.dataset.id = c.id;
+        
+        const tagsHtml = (c.tags || []).length > 0 
+          ? `<div class="card-tags">${c.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` 
+          : '';
+        
+        const descHtml = c.description 
+          ? `<div class="card-description">${c.description}</div>` 
+          : '';
+
+        let checklistHtml = '';
+        if (c.checklist && c.checklist.length > 0) {
+          const completed = c.checklist.filter(item => item.completed).length;
+          const total = c.checklist.length;
+          const progress = total > 0 ? (completed / total) * 100 : 0;
+          
+          checklistHtml = `
+            <div class="card-checklist">
+              <div class="checklist-header">
+                <span>✓ ${completed}/${total}</span>
+              </div>
+              <div class="checklist-progress">
+                <div class="checklist-progress-bar" style="width: ${progress}%"></div>
+              </div>
+              ${c.checklist.slice(0, 2).map((item, idx) => `
+                <div class="checklist-item ${item.completed ? 'completed' : ''}">
+                  <input type="checkbox" 
+                         ${item.completed ? 'checked' : ''} 
+                         onclick="toggleChecklistItem('${c.id}', '${id}', ${idx})">
+                  <label>${item.text}</label>
+                </div>
+              `).join('')}
+              ${c.checklist.length > 2 ? `<div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">+${c.checklist.length - 2} itens...</div>` : ''}
+            </div>
+          `;
+        }
+        
+        const dueDateHtml = c.dueDate 
+          ? `<div class="card-dates">
+               📅 ${formatDate(c.dueDate)}
+               ${isOverdue(c.dueDate) ? '<span class="overdue-badge">Atrasada</span>' : ''}
+             </div>`
+          : '';
+
+        card.innerHTML = `
+          <div class="card-priority ${c.priority || 'low'}"></div>
+          <div class="card-header">
+            <div class="card-title">${c.text}</div>
+            <div class="card-actions">
+              <button class="card-btn" onclick="editCard('${c.id}', '${id}')">✏️</button>
+              <button class="card-btn" onclick="deleteCard('${c.id}', '${id}')">🗑️</button>
+            </div>
+          </div>
+          ${descHtml}
+          ${checklistHtml}
+          <div class="card-meta">
+            <div class="card-meta-item">👤 ${c.owner}</div>
+            <div class="card-meta-item">👥 ${c.team}</div>
+          </div>
+          ${tagsHtml}
+          ${dueDateHtml}
+        `;
+
+        card.ondragstart = e => {
+          card.classList.add('dragging');
+          e.dataTransfer.setData('application/json', JSON.stringify({ id: c.id, from: id }));
+        };
+        card.ondragend = () => card.classList.remove('dragging');
+
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    kb.appendChild(div);
+  }
+
+  // Stats Bar
+  const completionRate = totalCards > 0 ? Math.round((doneCount / totalCards) * 100) : 0;
+  const statsDiv = document.getElementById('statsBar');
+  statsDiv.innerHTML = `
+    <div class="stat-item">
+      <div class="stat-label">Total</div>
+      <div class="stat-value">${totalCards}</div>
+    </div>
+    ${Object.entries(stats).map(([k, v]) => `
+      <div class="stat-item">
+        <div class="stat-label">${board.columns[k].title}</div>
+        <div class="stat-value">${v}</div>
+      </div>
+    `).join('')}
+    ${overdueCount > 0 ? `
+      <div class="stat-item">
+        <div class="stat-label">⚠️ Atrasadas</div>
+        <div class="stat-value" style="color: var(--danger);">${overdueCount}</div>
+      </div>
+    ` : ''}
+    <div class="stat-item">
+      <div class="stat-label">Taxa de Conclusão</div>
+      <div class="stat-value">${completionRate}%</div>
+    </div>
+  `;
+}
+
+function drop(e, target) {
+  e.preventDefault();
+  const targetElement = e.currentTarget;
+  targetElement.classList.remove('dropzone-hover');
+  
+  const data = JSON.parse(e.dataTransfer.getData('application/json'));
+  const { id, from } = data;
+
+  if (from === target) return;
+
+  const board = getCurrentBoard();
+  const item = board.columns[from].cards.find(c => c.id === id);
+  if (!item) return;
+
+  item.movedAt = new Date().toISOString();
+  board.columns[from].cards = board.columns[from].cards.filter(c => c.id !== id);
+  board.columns[target].cards.push(item);
+  save();
+  render();
+  showToast('Tarefa Movida', `Movida para ${board.columns[target].title}`);
+}
+
+// ===== ANALYTICS =====
+function renderAnalytics() {
+  const board = getCurrentBoard();
+  
+  // Destroy existing charts
+  Object.values(charts).forEach(chart => chart.destroy());
+  charts = {};
+
+  // Collect data
+  const statusData = {};
+  const ownerData = {};
+  const priorityData = { high: 0, medium: 0, low: 0 };
+  let totalCompleted = 0;
+  let totalCreated = 0;
+  let totalLeadTime = 0;
+  let leadTimeCount = 0;
+
+  for (const colId in board.columns) {
+    const col = board.columns[colId];
+    statusData[col.title] = col.cards.length;
+    
+    col.cards.forEach(card => {
+      // Owner stats
+      ownerData[card.owner] = (ownerData[card.owner] || 0) + 1;
+      
+      // Priority stats
+      priorityData[card.priority || 'low']++;
+      
+      // Lead time calculation
+      if (colId === 'done' && card.createdAt && card.movedAt) {
+        const created = new Date(card.createdAt);
+        const moved = new Date(card.movedAt);
+        const days = Math.floor((moved - created) / (1000 * 60 * 60 * 24));
+        totalLeadTime += days;
+        leadTimeCount++;
+        totalCompleted++;
+      }
+      
+      totalCreated++;
+    });
+  }
+
+  // Status Chart
+  const statusCtx = document.getElementById('statusChart').getContext('2d');
+  charts.status = new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(statusData),
+      datasets: [{
+        data: Object.values(statusData),
+        backgroundColor: ['#3b82f6', '#f59e0b', '#06b6d4', '#10b981'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+
+  // Owner Chart
+  const ownerCtx = document.getElementById('ownerChart').getContext('2d');
+  charts.owner = new Chart(ownerCtx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(ownerData),
+      datasets: [{
+        label: 'Tarefas',
+        data: Object.values(ownerData),
+        backgroundColor: '#3b82f6',
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+  // Priority Chart
+  const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+  charts.priority = new Chart(priorityCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Alta', 'Média', 'Baixa'],
+      datasets: [{
+        data: [priorityData.high, priorityData.medium, priorityData.low],
+        backgroundColor: ['#dc2626', '#f59e0b', '#10b981'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+
+  // Week Chart (mock data for now)
+  const weekCtx = document.getElementById('weekChart').getContext('2d');
+  charts.week = new Chart(weekCtx, {
+    type: 'line',
+    data: {
+      labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      datasets: [{
+        label: 'Tarefas Concluídas',
+        data: [3, 5, 2, 8, 6, 4, 1],
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+  // Update stats
+  const avgLeadTime = leadTimeCount > 0 ? Math.round(totalLeadTime / leadTimeCount) : 0;
+  const velocity = totalCompleted; // Simplified
+  const completionRate = totalCreated > 0 ? Math.round((totalCompleted / totalCreated) * 100) : 0;
+
+  document.getElementById('velocityStat').textContent = velocity;
+  document.getElementById('leadTimeStat').textContent = avgLeadTime;
+  document.getElementById('completionRate').textContent = completionRate + '%';
+}
+
+// ===== NOTES =====
+function createNote() {
+  const newNote = {
+    id: crypto.randomUUID(),
+    title: 'Nova Nota',
+    content: '',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  state.notes.push(newNote);
+  currentNoteId = newNote.id;
+  save();
+  renderNotes();
+  openNoteEditor(newNote.id);
+}
+
+function openNoteEditor(noteId) {
+  const note = state.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  currentNoteId = noteId;
+  document.getElementById('noteTitleInput').value = note.title;
+  document.getElementById('noteContentInput').value = note.content;
+  document.getElementById('noteLastEdited').textContent = formatDateTime(note.updatedAt);
+  
+  document.getElementById('notesList').style.display = 'none';
+  document.querySelector('.notes-header').style.display = 'none';
+  document.getElementById('noteEditor').classList.add('active');
+}
+
+function closeNoteEditor() {
+  document.getElementById('noteEditor').classList.remove('active');
+  document.getElementById('notesList').style.display = 'grid';
+  document.querySelector('.notes-header').style.display = 'flex';
+  currentNoteId = null;
+  save();
+}
+
+function saveNote() {
+  if (!currentNoteId) return;
+  
+  const note = state.notes.find(n => n.id === currentNoteId);
+  if (!note) return;
+  
+  note.title = document.getElementById('noteTitleInput').value.trim() || 'Sem título';
+  note.content = document.getElementById('noteContentInput').value;
+  note.updatedAt = new Date().toISOString();
+  
+  save();
+  showToast('Nota Salva', 'Suas alterações foram salvas.');
+}
+
+function deleteNote(noteId) {
+  if (!confirm('Deletar esta nota?')) return;
+  state.notes = state.notes.filter(n => n.id !== noteId);
+  if (currentNoteId === noteId) {
+    closeNoteEditor();
+  }
+  save();
+  renderNotes();
+  showToast('Nota Deletada', 'Nota removida com sucesso.', '🗑️');
+}
+
+function deleteCurrentNote() {
+  if (currentNoteId) {
+    deleteNote(currentNoteId);
+  }
+}
+
+function renderNotes() {
+  const container = document.getElementById('notesList');
+  
+  if (state.notes.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">Nenhuma nota</div>
+        <div class="empty-text">Crie sua primeira nota!</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = state.notes.map(note => {
+    const preview = note.content.substring(0, 200) || 'Nota vazia...';
+    return `
+      <div class="note-item" onclick="openNoteEditor('${note.id}')">
+        <div class="note-item-header">
+          <div class="note-item-title">${note.title}</div>
+          <div class="note-item-actions">
+            <button class="card-btn" onclick="event.stopPropagation(); deleteNote('${note.id}')">🗑️</button>
+          </div>
+        </div>
+        <div class="note-item-date">${formatDateTime(note.updatedAt)}</div>
+        <div class="note-item-preview">${preview}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'f') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  
+  if (e.key === 'n' && !e.ctrlKey && !e.target.matches('input, textarea')) {
+    e.preventDefault();
+    openAddTaskModal();
+  }
+  
+  if (e.key === 'Escape') {
+    closeTaskModal();
+    if (currentNoteId) {
+      closeNoteEditor();
+    }
+  }
+});
+
+// ===== EXPORT/IMPORT =====
+function exportData() {
+  const dataStr = JSON.stringify(state, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `noteyou-backup-${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup Criado', 'Seus dados foram exportados!', '💾');
+}
+
+function importData() {
+  document.getElementById('importFile').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (confirm('Importar dados? Isso substituirá todos os dados atuais.')) {
+        state = imported;
+        save();
+        render();
+        renderBoards();
+        showToast('Dados Importados', 'Backup restaurado com sucesso!', '📥');
+      }
+    } catch (err) {
+      showToast('Erro', 'Arquivo inválido!', '❌');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== AUTO-SAVE NOTES =====
+setInterval(() => {
+  if (currentNoteId) {
+    const note = state.notes.find(n => n.id === currentNoteId);
+    if (note) {
+      const newContent = document.getElementById('noteContentInput').value;
+      const newTitle = document.getElementById('noteTitleInput').value.trim() || 'Sem título';
+      if (newContent !== note.content || newTitle !== note.title) {
+        note.content = newContent;
+        note.title = newTitle;
+        note.updatedAt = new Date().toISOString();
+        save();
+        document.getElementById('noteLastEdited').textContent = formatDateTime(note.updatedAt);
+      }
+    }
+  }
+}, 5000);
+
+// ===== INIT =====
+document.documentElement.dataset.theme = state.theme;
+renderBoards();
+render();
+renderNotes();
+
+// PWA Installation
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('data:text/javascript,console.log("SW")').catch(() => {});
+}
+</script>
+
+</body>
+</html>
