@@ -42,3 +42,4 @@ Um aplicativo web simples e offline para gerenciar tarefas em um quadro Kanban. 
  ## Este projeto é de código aberto e está sob a licença MIT. Você pode usá-lo, modificá-lo e distribuí-lo livremente.
 
 ## Desenvolvido com simplicidade em mente. Se tiver dúvidas, abra uma issue! 🚀
+[Teste Aqui!](https://shadowruge.github.io/noteYou/)
