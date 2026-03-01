@@ -1,0 +1,354 @@
+/* ===== RESPONSIVO E MOBILE-FIRST ===== */
+/* Otimizações para dispositivos móveis - NoteYou 3.0 */
+
+/* Tablets e menores */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+  }
+  
+  .main-content {
+    margin-left: 240px;
+  }
+  
+  .kanban-board {
+    gap: 12px;
+  }
+  
+  .kanban-column {
+    min-width: 280px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  /* Sidebar recolhível */
+  .sidebar {
+    position: fixed;
+    left: -240px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 20px 16px;
+  }
+  
+  /* Menu toggle */
+  .menu-toggle {
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  
+  /* Kanban Board */
+  .kanban-board {
+    flex-direction: column;
+    gap: 16px;
+    overflow-x: auto;
+  }
+  
+  .kanban-column {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Cards */
+  .task-card {
+    margin-bottom: 12px;
+  }
+  
+  .task-card:hover {
+    transform: none;
+  }
+  
+  /* Header */
+  .app-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  /* Modal */
+  .modal-content {
+    margin: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  
+  /* Formulários */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* Botões */
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  /* Toast */
+  .toast {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    max-width: none;
+  }
+  
+  /* Login Mobile */
+  .login-container {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+  
+  .login-card {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  
+  .login-form {
+    padding: 20px 15px;
+  }
+  
+  .login-tabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .login-tab {
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Analytics */
+  .analytics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  /* Notes */
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .note-card {
+    padding: 16px;
+  }
+  
+  /* User Profile */
+  .user-profile {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 16px 12px;
+  }
+  
+  .kanban-column-header {
+    padding: 12px;
+  }
+  
+  .task-card {
+    padding: 12px;
+  }
+  
+  .modal-content {
+    margin: 12px;
+    padding: 20px 16px;
+  }
+  
+  .login-form {
+    padding: 24px 16px;
+  }
+  
+  .form-input {
+    font-size: 16px; /* Evita zoom no iOS */
+  }
+  
+  .btn {
+    padding: 14px 20px;
+    font-size: 16px; /* Evita zoom no iOS */
+  }
+}
+
+/* Touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .task-card {
+    transition: none;
+  }
+  
+  .task-card:hover {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+  
+  .btn {
+    min-height: 44px; /* Área mínima para toque */
+    min-width: 44px;
+  }
+  
+  .form-input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  
+  .kanban-column-header {
+    min-height: 44px;
+  }
+  
+  .note-card {
+    transition: none;
+  }
+  
+  .note-card:hover {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+}
+
+/* Dark mode mobile optimizations */
+@media (max-width: 768px) {
+  [data-theme="dark"] .sidebar {
+    background: var(--card);
+    border-right: 1px solid var(--border);
+  }
+  
+  [data-theme="dark"] .modal-content {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  
+  [data-theme="dark"] .login-form {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+}
+
+/* Performance optimizations para mobile */
+@media (max-width: 768px) {
+  /* Reduz animações em dispositivos mais lentos */
+  * {
+    transition-duration: 0.1s !important;
+  }
+  
+  /* Simplifica sombras */
+  .task-card,
+  .note-card,
+  .modal-content {
+    box-shadow: var(--shadow) !important;
+  }
+  
+  .task-card:hover,
+  .note-card:hover {
+    box-shadow: var(--shadow-hover) !important;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .login-container {
+    padding: 5px;
+    align-items: center;
+  }
+  
+  .login-card {
+    max-width: 400px;
+  }
+  
+  .login-form {
+    padding: 15px 16px;
+  }
+  
+  .modal-content {
+    margin: 16px;
+    max-height: calc(100vh - 32px);
+  }
+  
+  .kanban-board {
+    gap: 12px;
+  }
+  
+  .kanban-column {
+    min-height: 300px;
+  }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 320px) {
+  .login-container {
+    padding: 5px;
+  }
+  
+  .login-card {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+  
+  .login-form {
+    padding: 15px 10px;
+  }
+  
+  .form-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .test-credentials {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
