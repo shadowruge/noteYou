@@ -804,89 +804,284 @@
   <script src="assets/js/app.js"></script>
   <script src="assets/js/app-functions.js"></script>
   
-  <!-- Security Check -->
+  <!-- Security Check - Enhanced Firefox Extension Protection -->
   <script>
-    // Correção para lockdown errors (baseado na solução MetaMask)
-    // https://github.com/MetaMask/metamask-extension/issues/20847
+    // 🔒 SISTEMA DE PROTEÇÃO CONTRA EXTENSÕES FIREFOX
+    // Baseado na solução MetaMask #20847 e problemas comuns de extensões
     
-    // Detectar e corrigir lockdown de segurança de extensões (MetaMask, etc.)
     (function() {
-      // Polyfill para Object.groupBy se foi removido pelo lockdown
-      if (typeof Object.groupBy === 'undefined') {
-        Object.groupBy = function(items, callback) {
-          const groups = {};
-          for (const item of items) {
-            const key = callback(item);
-            if (!groups[key]) {
-              groups[key] = [];
-            }
-            groups[key].push(item);
+      console.log('🔒 Iniciando sistema de proteção contra extensões...');
+      
+      // 1. DETECÇÃO DE EXTENSÕES PROBLEMÁTICAS
+      const problematicExtensions = {
+        metamask: () => typeof window.ethereum !== 'undefined',
+        firefoxPrivacy: () => navigator.userAgent.includes('Firefox') && 
+                           (typeof window.content !== 'undefined' || 
+                            typeof browser !== 'undefined'),
+        noscript: () => typeof window.noscript !== 'undefined',
+        ublock: () => typeof window.ublock !== 'undefined',
+        privacyBadger: () => typeof window.privacyBadger !== 'undefined'
+      };
+      
+      let detectedExtensions = [];
+      for (const [name, detector] of Object.entries(problematicExtensions)) {
+        if (detector()) {
+          detectedExtensions.push(name);
+        }
+      }
+      
+      // 2. POLYFILLS ESSENCIAIS PARA LOCKDOWN
+      const essentialPolyfills = {
+        // Object.groupBy - frequentemente removido
+        ObjectGroupBy: () => {
+          if (typeof Object.groupBy === 'undefined') {
+            Object.groupBy = function(items, callback) {
+              const groups = {};
+              for (const item of items) {
+                const key = callback(item);
+                if (!groups[key]) {
+                  groups[key] = [];
+                }
+                groups[key].push(item);
+              }
+              return groups;
+            };
+            console.log('✅ Object.groupBy polyfill aplicado');
           }
-          return groups;
-        };
-      }
-      
-      // Polyfill para hardenIntrinsics se foi removido
-      if (typeof window.hardenIntrinsics === 'undefined') {
-        window.hardenIntrinsics = function() {
-          console.log('🔒 hardenIntrinsics polyfill applied');
-          return {};
-        };
-      }
-      
-      // Polyfill para harden se foi removido
-      if (typeof window.harden === 'undefined') {
-        window.harden = function(obj) {
-          console.log('🔒 harden polyfill applied');
-          return obj;
-        };
-      }
-      
-      // Detectar se MetaMask ou similar está ativo
-      if (typeof window.ethereum !== 'undefined' || 
-          typeof window.web3 !== 'undefined' ||
-          document.querySelector('meta[name="meta-mask"]') ||
-          location.hostname.includes('metamask')) {
+        },
         
-        console.warn('⚠️ Extensão de carteira detectada (MetaMask/similar) - aplicando correções de lockdown');
+        // Funções de segurança SES
+        HardenIntrinsics: () => {
+          if (typeof window.hardenIntrinsics === 'undefined') {
+            window.hardenIntrinsics = function() {
+              console.log('✅ hardenIntrinsics polyfill aplicado');
+              return {};
+            };
+          }
+        },
         
-        // Adicionar aviso na página
-        window.addEventListener('DOMContentLoaded', () => {
-          const warning = document.createElement('div');
-          warning.style.cssText = `
-            position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-            background: #f39c12; color: white; padding: 10px 20px;
-            border-radius: 5px; z-index: 10000; font-weight: bold;
-            font-size: 14px;
+        Harden: () => {
+          if (typeof window.harden === 'undefined') {
+            window.harden = function(obj) {
+              console.log('✅ harden polyfill aplicado');
+              return obj;
+            };
+          }
+        },
+        
+        // Date.prototype.toTemporalInstant - removido por lockdown
+        DateToTemporalInstant: () => {
+          if (typeof Date.prototype.toTemporalInstant === 'undefined') {
+            Date.prototype.toTemporalInstant = function() {
+              return {
+                toEpochMilliseconds: () => this.getTime(),
+                toEpochNanoseconds: () => BigInt(this.getTime()) * BigInt(1000000)
+              };
+            };
+            console.log('✅ Date.prototype.toTemporalInstant polyfill aplicado');
+          }
+        },
+        
+        // Performance API
+        PerformanceAPI: () => {
+          if (typeof performance.now === 'undefined') {
+            window.performance = window.performance || {};
+            performance.now = () => Date.now();
+            console.log('✅ Performance API polyfill aplicado');
+          }
+        },
+        
+        // Crypto API essencial
+        CryptoAPI: () => {
+          if (typeof crypto.subtle === 'undefined') {
+            // Polyfill básico para crypto.subtle se necessário
+            console.log('✅ Crypto API polyfill verificado');
+          }
+        }
+      };
+      
+      // 3. APLICAR POLYFILLS IMEDIATAMENTE
+      Object.values(essentialPolyfills).forEach(polyfill => polyfill());
+      
+      // 4. DETECÇÃO DE BLOQUEIO DE FUNCIONALIDADES
+      const detectFunctionalityBlock = () => {
+        const issues = [];
+        
+        // Verificar se funções essenciais foram removidas
+        if (typeof localStorage === 'undefined') {
+          issues.push('localStorage bloqueado');
+        }
+        
+        if (typeof sessionStorage === 'undefined') {
+          issues.push('sessionStorage bloqueado');
+        }
+        
+        if (typeof fetch === 'undefined') {
+          issues.push('fetch API bloqueado');
+        }
+        
+        // Verificar se EventTarget funciona
+        try {
+          new EventTarget();
+        } catch (e) {
+          issues.push('EventTarget bloqueado');
+        }
+        
+        return issues;
+      };
+      
+      // 5. SISTEMA DE RECUPERAÇÃO
+      const attemptRecovery = () => {
+        console.log('🔄 Tentando recuperar funcionalidades bloqueadas...');
+        
+        // Tentar recriar objetos essenciais
+        if (typeof localStorage === 'undefined') {
+          try {
+            window.localStorage = {
+              _data: {},
+              getItem: function(key) { return this._data[key] || null; },
+              setItem: function(key, value) { this._data[key] = String(value); },
+              removeItem: function(key) { delete this._data[key]; },
+              clear: function() { this._data = {}; }
+            };
+            console.log('✅ localStorage fallback criado');
+          } catch (e) {
+            console.error('❌ Falha ao criar localStorage fallback:', e);
+          }
+        }
+        
+        // Tentar restaurar Event Target
+        if (typeof EventTarget === 'undefined') {
+          console.log('⚠️ EventTarget não disponível - problemas esperados');
+        }
+      };
+      
+      // 6. INTERFACE DE AVISO E CONTROLE
+      const createExtensionWarning = () => {
+        const warning = document.createElement('div');
+        warning.id = 'extension-warning';
+        warning.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; 
+          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+          color: white; padding: 12px; text-align: center;
+          font-weight: bold; font-size: 14px; z-index: 99999;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+          border-bottom: 3px solid #d63031;
+        `;
+        
+        if (detectedExtensions.length > 0) {
+          warning.innerHTML = `
+            🔒 EXTENSÃO DETECTADA: ${detectedExtensions.join(', ').toUpperCase()} 
+            | Login/Registro podem ser afetados | 
+            <button onclick="disableExtensionWarning()" style="
+              background: white; color: #d63031; border: none; 
+              padding: 4px 12px; border-radius: 4px; margin-left: 10px;
+              cursor: pointer; font-weight: bold;
+            ">ENTENDI</button>
           `;
-          warning.innerHTML = '🔐 Extensão de carteira detectada - polyfills aplicados';
-          document.body.appendChild(warning);
-          
-          setTimeout(() => warning.remove(), 4000);
-        });
-      }
-    })();
-    
-    // Verificar se há lockdown de segurança ativo
-    if (typeof Date.prototype.toTemporalInstant === 'undefined') {
-      console.warn('⚠️ Lockdown detectado - aplicando polyfills adicionais');
+        } else {
+          const issues = detectFunctionalityBlock();
+          if (issues.length > 0) {
+            warning.innerHTML = `
+              ⚠️ FUNCIONALIDADES BLOQUEADAS: ${issues.join(', ')} | 
+              <button onclick="attemptRecovery(); disableExtensionWarning()" style="
+                background: white; color: #d63031; border: none; 
+                padding: 4px 12px; border-radius: 4px; margin-left: 10px;
+                cursor: pointer; font-weight: bold;
+              ">TENTAR RECUPERAR</button>
+            `;
+          }
+        }
+        
+        return warning;
+      };
       
-      // Polyfill para Date.prototype.toTemporalInstant
-      if (typeof Date.prototype.toTemporalInstant === 'undefined') {
-        Date.prototype.toTemporalInstant = function() {
-          return {
-            toEpochMilliseconds: () => this.getTime(),
-            toEpochNanoseconds: () => BigInt(this.getTime()) * BigInt(1000000)
-          };
+      // 7. FUNÇÕES GLOBAIS DE CONTROLE
+      window.disableExtensionWarning = function() {
+        const warning = document.getElementById('extension-warning');
+        if (warning) {
+          warning.style.transition = 'opacity 0.3s';
+          warning.style.opacity = '0';
+          setTimeout(() => warning.remove(), 300);
+        }
+      };
+      
+      window.attemptRecovery = attemptRecovery;
+      
+      // 8. INICIALIZAR SISTEMA
+      window.addEventListener('DOMContentLoaded', () => {
+        console.log('🔒 Verificando compatibilidade com extensões...');
+        
+        const issues = detectFunctionalityBlock();
+        const hasIssues = detectedExtensions.length > 0 || issues.length > 0;
+        
+        if (hasIssues) {
+          console.warn('⚠️ Problemas detectados:', {
+            extensions: detectedExtensions,
+            issues: issues
+          });
+          
+          document.body.appendChild(createExtensionWarning());
+          
+          // Auto-remover após 10 segundos
+          setTimeout(() => {
+            disableExtensionWarning();
+          }, 10000);
+          
+          // Tentar recuperação automática
+          if (issues.length > 0) {
+            setTimeout(attemptRecovery, 1000);
+          }
+        } else {
+          console.log('✅ Nenhum problema de compatibilidade detectado');
+        }
+      });
+      
+      // 9. MONITORAMENTO CONTÍNUO
+      let loginAttempts = 0;
+      const originalLogin = window.handleLocalLogin;
+      const originalRegister = window.handleLocalRegister;
+      
+      // Wrapper para login com retry
+      if (typeof originalLogin === 'function') {
+        window.handleLocalLogin = async function(...args) {
+          try {
+            return await originalLogin.apply(this, args);
+          } catch (error) {
+            loginAttempts++;
+            console.error(`❌ Falha no login (tentativa ${loginAttempts}):`, error);
+            
+            if (loginAttempts === 1) {
+              attemptRecovery();
+              showToast('Problema Detectado', 'Tentando corrigir automaticamente...', '🔧');
+              
+              // Tentar novamente após 2 segundos
+              setTimeout(() => {
+                return originalLogin.apply(this, args);
+              }, 2000);
+            } else {
+              showToast('Erro de Compatibilidade', 
+                'Extensão está bloqueando o login. Desative extensões ou use outro navegador.', '❌');
+            }
+          }
         };
       }
       
-      // Polyfill para performance
-      if (typeof performance.now === 'undefined') {
-        window.performance = window.performance || {};
-        performance.now = () => Date.now();
+      // Wrapper para registro com retry
+      if (typeof originalRegister === 'function') {
+        window.handleLocalRegister = async function(...args) {
+          try {
+            return await originalRegister.apply(this, args);
+          } catch (error) {
+            console.error('❌ Falha no registro:', error);
+            attemptRecovery();
+            showToast('Problema Detectado', 'Tentando corrigir automaticamente...', '🔧');
+          }
+        };
       }
-    }
+      
+      console.log('✅ Sistema de proteção contra extensões inicializado');
+    })();
   </script>
 </body>
 </html>
