@@ -139,10 +139,17 @@ async function handleLocalLogin(event) {
     const result = await hybridAuth.login(email, password);
     
     if (result.success) {
+      // ATUALIZAR ESTADO ANTES DE ESCONDER LOGIN
       updateUserProfile(result.user);
+      currentUser = result.user;
+      authInitialized = true;
+      
+      // CARREGAR DADOS ANTES DE MUDAR INTERFACE
       await loadUserDataForUser(result.user.email);
+      
+      // SÓ ESCONDER LOGIN DEPOIS DE TUDO PRONTO
       hideLoginScreen();
-      showToast('Login Realizado!', `Bem-vendo de volta, ${result.user.name}!`, '🎉');
+      showToast('Login Realizado!', `Bem-vindo de volta, ${result.user.name}!`, '🎉');
     } else {
       showToast('Erro de Login', result.message, '❌');
     }
@@ -188,10 +195,18 @@ async function handleLocalRegister(event) {
     const result = await hybridAuth.register(email, password, name);
     
     if (result.success) {
-      showToast('Conta Criada!', 'Sua conta foi criada com sucesso!', '🎉');
-      event.target.reset();
+      // ATUALIZAR ESTADO ANTES DE MUDAR INTERFACE
+      currentUser = result.user;
+      authInitialized = true;
+      
+      // CARREGAR DADOS ANTES DE MUDAR INTERFACE
+      await loadUserDataForUser(result.user.email);
+      
+      // MUDAR PARA TELA DE LOGIN (sem refresh)
       switchToLogin();
       document.getElementById('loginEmail').value = email;
+      
+      showToast('Conta Criada!', 'Sua conta foi criada com sucesso!', '🎉');
     } else {
       showToast('Erro no Registro', result.message, '❌');
     }
@@ -754,8 +769,8 @@ function clearAllData() {
   }
 }
 
-// Executar limpeza automática
-clearAllData();
+// Executar limpeza automática (DESATIVADO - foi apenas para desenvolvimento)
+// clearAllData();
 
 // ===== PERFIL DO USUÁRIO =====
 
@@ -1131,10 +1146,7 @@ async function initApp() {
       }
     }
     
-    // Sempre mostrar tela de login inicialmente
-    showLoginScreen();
-    
-    // Se já existe usuário logado, esconder login e mostrar app
+    // Verificar se já existe usuário logado PRIMEIRO
     if (hybridAuth.isLoggedIn()) {
       const user = hybridAuth.getCurrentUser();
       currentUser = user;
@@ -1143,6 +1155,9 @@ async function initApp() {
       updateUserProfile(user);
       await loadUserDataForUser(user.email);
       hideLoginScreen();
+    } else {
+      // Apenas mostrar tela de login se NÃO houver usuário logado
+      showLoginScreen();
     }
     
   } catch (error) {
