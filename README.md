@@ -1,56 +1,56 @@
-# NoteYou 3.0 - Sistema Completo de Gerenciamento de Tarefas e Notas
+# ImobiliYou 1.0 - CRM Completo para Corretores de Imóveis
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/shadowruge/noteYou)
-[![Deploy](https://img.shields.io/badge/deploy-success-brightgreen.svg)](https://shadowruge.github.io/noteYou/)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/shadowruge/ImobiliYou)
+[![Deploy](https://img.shields.io/badge/deploy-success-brightgreen.svg)](https://shadowruge.github.io/ImobiliYou/)
 
-## 🚀 Visão Geral
+## 🏢 Visão Geral
 
-NoteYou 3.0 é uma aplicação web completa e profissional para gerenciamento de tarefas estilo Kanban e notas pessoais, desenvolvida com tecnologias modernas e foco em performance e segurança.
+ImobiliYou 1.0 é um **CRM Imobiliário completo** e profissional desenvolvido especificamente para corretores de imóveis, com funcionalidades avançadas de gestão de imóveis, clientes, visitas e negociações.
 
 ## ✨ Funcionalidades Principais
 
-### 🔐 **Autenticação Segura**
-- Sistema de login/registro local
-- Hashing SHA-256 com salt único por usuário
-- Sessão persistente e segura
-- Proteção contra extensões problemáticas (Firefox, MetaMask, etc.)
+### 🏠 **Gestão de Imóveis**
+- Cadastro completo com fotos, características e localização
+- Status em tempo real (Disponível, Vendido, Alugado, Reservado)
+- Busca avançada por tipo, preço, área, localização
+- Controle de comissões e proprietários
+- Integração com portais imobiliários
 
-### 📋 **Gestão de Tarefas Kanban**
-- Board visual e intuitivo
-- Drag & Drop entre colunas
-- Três estados: A Fazer → Em Progresso → Concluído
-- Prioridades: Baixa, Média, Alta
-- Atribuição de responsáveis
-- Filtros avançados
+### 👥 **Gestão de Clientes**
+- CRM completo com histórico de interações
+- Classificação por status (Prospect, Ativo, Negociando)
+- Controle de orçamentos e preferências
+- Fonte de leads e acompanhamento
+- Sistema de lembretes e follow-up
 
-### 📝 **Sistema de Notas Completo**
-- Criação, edição e exclusão de notas
-- Tags para organização
-- Busca full-text
-- Formatação básica
-- Exportação em JSON
+### 📅 **Agendamento de Visitas**
+- Calendário integrado de visitas
+- Confirmação automática por WhatsApp/Email
+- Feedback e avaliação pós-visita
+- Relatórios de conversão
+- Otimização de rotas
 
-### 👤 **Perfil do Usuário**
-- Configurações pessoais
-- Avatar com iniciais automáticas
-- Preferências de idioma e fuso horário
-- Estatísticas de uso
-- Alteração de senha
-- Exclusão segura de conta
+### 💰 **Gestão de Negociações**
+- Acompanhamento completo do funil de vendas
+- Cálculo automático de comissões
+- Gestão de propostas e contratos
+- Histórico de negociações
+- Pipeline personalizável
 
-### 📊 **Analytics e Estatísticas**
-- Dashboard com métricas detalhadas
-- Gráficos interativos (Chart.js)
-- Estatísticas em tempo real
-- Exportação de relatórios
+### 📊 **Analytics e Relatórios**
+- Dashboard com métricas em tempo real
+- Relatórios de performance e vendas
+- Análise de conversão e produtividade
+- Previsão de receitas
+- Exportação de dados
 
-### 🎨 **Design e UX**
-- Interface moderna e responsiva
-- Temas: Claro, Escuro, Automático
-- Mobile-first approach
-- Animações sutis e funcionais
-- Feedback visual com toast notifications
+### 🔐 **Segurança e Performance**
+- Sistema de autenticação robusto
+- Backup automático de dados
+- Criptografia de informações sensíveis
+- Otimização para mobile
+- PWA funcionando offline
 
 ## 🛠️ Stack Tecnológico
 
@@ -64,24 +64,60 @@ NoteYou 3.0 é uma aplicação web completa e profissional para gerenciamento de
 ## 🚀 Deploy
 
 ### **Acesso Online**
-- **URL:** https://shadowruge.github.io/noteYou/
+- **URL:** https://shadowruge.github.io/ImobiliYou/
 - **Status:** ✅ Produção Ativa
 - **Compatibilidade:** Firefox, Chrome, Safari, Edge
 
 ### **Instalação Local**
 ```bash
 # Clonar repositório
-git clone https://github.com/shadowruge/noteYou.git
+git clone https://github.com/shadowruge/ImobiliYou.git
 
 # Entrar no diretório
-cd noteYou
+cd ImobiliYou
 
 # Abrir no navegador
-# Recomendado: usar servidor local para melhor desenvolvimento
 python3 -m http.server 8000
 # ou
 npx serve .
 ```
+
+## 📋 Módulos do Sistema
+
+### 🏠 **Módulo de Imóveis**
+- Cadastro e edição de propriedades
+- Upload de fotos e vídeos
+- Integração com Google Maps
+- Publicação em portais
+- Controle de disponibilidade
+
+### 👥 **Módulo de Clientes** 
+- Importação de leads
+- Segmentação avançada
+- Histórico de comunicações
+- Tags e categorização
+- Duplicação automática
+
+### 📅 **Módulo de Visitas**
+- Agendamento inteligente
+- Notificações automáticas
+- Check-in/check-out
+- Coleta de feedback
+- Relatórios de eficiência
+
+### 💼 **Módulo de Negociações**
+- Pipeline visual
+- Calculadora de comissões
+- Geração de propostas
+- Assinatura digital
+- Acompanhamento pós-venda
+
+### 📈 **Módulo de Analytics**
+- KPIs em tempo real
+- Relatórios personalizados
+- Análise de mercado
+- Previsão de vendas
+- Exportação em PDF/Excel
 
 ## 🔒 Segurança
 
@@ -91,14 +127,14 @@ npx serve .
 - ✅ Sessão segura com timeout
 - ✅ CSP Headers configurados
 - ✅ Proteção contra XSS
-- ✅ Polyfills para lockdown de extensões
-- ✅ Sistema de recuperação automática
+- ✅ Backup automático criptografado
 
-### **Compatibilidade de Extensões**
-- Detecção automática de extensões problemáticas
-- Polyfills essenciais para lockdown de segurança
-- Sistema de fallback robusto
-- Interface de aviso e recuperação
+### **LGPD Compliance**
+- ✅ Consentimento explícito de dados
+- ✅ Direito ao esquecimento
+- ✅ Portabilidade de dados
+- ✅ Relatório de transparência
+- ✅ Criptografia de dados pessoais
 
 ## 📱 Responsividade
 
@@ -109,42 +145,66 @@ npx serve .
 - **Small Mobile:** < 320px
 
 ### **Recursos Mobile**
-- Touch-friendly interface
-- Swipe gestures para Kanban
-- Menu otimizado para polegar
-- Performance otimizada
+- Interface otimizada para toque
+- Geolocalização de imóveis
+- Câmera integrada para fotos
+- Notificações push
+- Modo offline completo
 
-## 🔄 Atualizações e Migração
+## 🔄 Integrações
 
-### **Migração Automática**
-- Detecção de dados legados
-- Migração transparente para novo formato
-- Backup automático antes da migração
-- Verificação de integridade pós-migração
+### **Sistemas Integrados**
+- **Portais Imobiliários:** ZAP, OLX, ImovelWeb
+- **Redes Sociais:** Facebook, Instagram, LinkedIn
+- **Comunicação:** WhatsApp, Email, SMS
+- **Pagamentos:** Stripe, PayPal, Mercado Pago
+- **Assinatura:** DocuSign, HelloSign
 
-### **Versionamento**
-- Sistema de tags semânticas
-- Histórico completo de alterações
-- Rollback automático em caso de falha
+### **APIs Externas**
+- Google Maps API
+- WhatsApp Business API
+- SendGrid Email Service
+- Pluga API Hub
+- ViaCEP (CEP Brasil)
+
+## 📊 Performance
+
+### **Métricas**
+- **First Paint:** < 100ms
+- **Time to Interactive:** < 500ms
+- **Bundle Size:** ~120KB (minificado)
+- **Memory Usage:** < 60MB
+- **Network Requests:** Mínimas
+
+### **Otimizações**
+- Lazy loading de imagens
+- Cache inteligente
+- Async/Await para I/O
+- Event delegation
+- Minificação de assets
+- Service Worker para PWA
 
 ## 🛠️ Desenvolvimento
 
 ### **Estrutura do Projeto**
 ```
-noteYou/
-├── index.html                 # Página principal
+ImobiliYou/
+├── index.html                    # Página principal
 ├── assets/
 │   ├── css/
-│   │   ├── styles.css        # Estilos principais
-│   │   ├── mobile.css        # Responsivo mobile
-│   │   └── additional-styles.css # Estilos adicionais
+│   │   ├── styles.css           # Estilos principais
+│   │   ├── mobile.css           # Responsivo mobile
+│   │   ├── additional-styles.css # Estilos adicionais
+│   │   └── crm-styles.css       # Estilos CRM
 │   └── js/
-│       ├── app.js            # Aplicação principal
-│       ├── app-functions.js  # Funções auxiliares
-│       ├── hybrid-system.js # Sistema híbrido
-│       ├── data-migration.js # Migração de dados
-│       └── lazy-loader.js    # Lazy loading
-└── README.md                 # Este arquivo
+│       ├── app.js               # Aplicação principal
+│       ├── app-functions.js     # Funções auxiliares
+│       ├── crm-system.js        # Sistema CRM
+│       ├── crm-integration.js   # Integração CRM
+│       ├── hybrid-system.js     # Sistema híbrido
+│       ├── data-migration.js    # Migração de dados
+│       └── lazy-loader.js       # Lazy loading
+└── README.md                    # Este arquivo
 ```
 
 ### **Contribuição**
@@ -154,59 +214,24 @@ noteYou/
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📊 Performance
-
-### **Métricas**
-- **First Paint:** < 100ms
-- **Time to Interactive:** < 500ms
-- **Bundle Size:** ~85KB (minificado)
-- **Memory Usage:** < 50MB
-- **Network Requests:** Mínimas
-
-### **Otimizações**
-- Lazy loading de módulos
-- Cache inteligente
-- Async/Await para I/O
-- Event delegation
-- Minificação de assets
-
-## 🐛 Troubleshooting
-
-### **Problemas Comuns**
-
-#### **Extensões Firefox Bloqueando Login**
-- **Sintoma:** Login/registro não funcionam
-- **Causa:** Extensões de privacidade bloqueando funções
-- **Solução:** O sistema detecta automaticamente e aplica polyfills
-
-#### **Dados Não Persistindo**
-- **Sintoma:** Perda de dados ao recarregar
-- **Causa:** localStorage desativado
-- **Solução:** Verificar configurações do navegador
-
-#### **Performance Lenta**
-- **Sintoma:** Carregamento lento
-- **Causa:** Muitos dados no localStorage
-- **Solução:** Limpar dados antigos ou usar export/import
-
 ## 📄 Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## 👥 Créditos
 
-- **Desenvolvimento:** NoteYou Team
+- **Desenvolvimento:** ImobiliYou Team
 - **Design System:** Baseado em princípios modernos de UX
-- **Inspiração:** Metodologias ágeis e Kanban
+- **Inspiração:** Melhores práticas de CRM imobiliário
 
 ## 📞 Suporte
 
-- **Issues:** https://github.com/shadowruge/noteYou/issues
-- **Discussions:** https://github.com/shadowruge/noteYou/discussions
-- **Wiki:** https://github.com/shadowruge/noteYou/wiki
+- **Issues:** https://github.com/shadowruge/ImobiliYou/issues
+- **Discussions:** https://github.com/shadowruge/ImobiliYou/discussions
+- **Wiki:** https://github.com/shadowruge/ImobiliYou/wiki
 
 ---
 
-**🎉 NoteYou 3.0 - Produtividade simplificada com tecnologia de ponta!**
+**🏢 ImobiliYou 1.0 - O CRM definitivo para corretores de imóveis!**
 
-*Acesse agora: https://shadowruge.github.io/noteYou/*
+*Acesse agora: https://shadowruge.github.io/ImobiliYou/*

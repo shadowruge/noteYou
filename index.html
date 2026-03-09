@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoteYou 3.0 - Sistema de Gerenciamento de Tarefas e Notas</title>
-  <meta name="description" content="Sistema completo de gerenciamento de tarefas Kanban e notas com banco de dados híbrido">
-  <meta name="keywords" content="tarefas, kanban, notas, produtividade, gestão">
-  <meta name="author" content="NoteYou Team">
+  <title>ImobiliYou 1.0 - CRM Completo para Corretores de Imóveis</title>
+  <meta name="description" content="CRM imobiliário completo para gestão de imóveis, clientes, visitas e negociações">
+  <meta name="keywords" content="crm, imobiliário, corretores, imóveis, gestão, vendas">
+  <meta name="author" content="ImobiliYou Team">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📝</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏢</text></svg>">
   
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -26,19 +26,20 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/mobile.css">
   <link rel="stylesheet" href="assets/css/additional-styles.css">
+  <link rel="stylesheet" href="assets/css/crm-styles.css">
   
   <!-- Security Headers -->
   <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdn.jsdelivr.net https://accounts.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.googleapis.com; object-src 'none'; base-uri 'self';"> -->
   
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#667eea">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="NoteYou">
+  <meta name="apple-mobile-web-app-title" content="ImobiliYou">
   
   <!-- Open Graph -->
-  <meta property="og:title" content="NoteYou 3.0">
-  <meta property="og:description" content="Sistema completo de gerenciamento de tarefas e notas">
+  <meta property="og:title" content="ImobiliYou 1.0">
+  <meta property="og:description" content="CRM imobiliário completo para corretores de imóveis">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/og-image.png">
   
@@ -49,7 +50,7 @@
   <!-- TELA DE LOGIN -->
   <div id="loginContainer" class="login-container" style="display: flex;">
     <div class="login-card">
-      <div class="login-logo">NoteYou 3.0</div>
+      <div class="login-logo">ImobiliYou 1.0</div>
       
       <!-- Abas de Login -->
       <div class="login-tabs">
@@ -218,7 +219,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <a href="#" class="sidebar-logo">
-          📝 NoteYou
+          🏢 ImobiliYou
         </a>
       </div>
       
@@ -238,6 +239,18 @@
         <a href="#analytics" class="nav-item" data-section="analytics">
           <span class="nav-icon">📈</span>
           Analytics
+        </a>
+        <a href="#properties" class="nav-item" data-section="properties">
+          <span class="nav-icon">🏠</span>
+          Imóveis
+        </a>
+        <a href="#clients" class="nav-item" data-section="clients">
+          <span class="nav-icon">👥</span>
+          Clientes
+        </a>
+        <a href="#visits" class="nav-item" data-section="visits">
+          <span class="nav-icon">📅</span>
+          Visitas
         </a>
         <a href="#profile" class="nav-item" data-section="profile">
           <span class="nav-icon">👤</span>
@@ -314,16 +327,16 @@
       <!-- Header -->
       <header class="app-header">
         <div>
-          <h1 class="header-title">Bem-vindo ao NoteYou 3.0</h1>
-          <p class="header-subtitle">Organize suas tarefas e notas de forma eficiente</p>
+          <h1 class="header-title">Bem-vindo ao ImobiliYou 1.0</h1>
+          <p class="header-subtitle">CRM completo para gestão imobiliária</p>
         </div>
         
         <div class="header-actions">
           <button class="btn btn-secondary" onclick="toggleTheme()" title="Alternar tema">
             🌙
           </button>
-          <button class="btn btn-primary" onclick="showCreateBoardModal()">
-            + Novo Board
+          <button class="btn btn-primary" onclick="showPropertyModal()">
+            + Novo Imóvel
           </button>
         </div>
       </header>
@@ -555,6 +568,196 @@
               <div class="chart-container">
                 <canvas id="tasksChart"></canvas>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Properties Section -->
+      <section id="propertiesSection" class="content-section" style="display: none;">
+        <div class="crm-container">
+          <div class="crm-header">
+            <h1 class="crm-title">🏠 Gestão de Imóveis</h1>
+            <p class="crm-subtitle">Controle completo do portfólio imobiliário</p>
+          </div>
+
+          <div class="crm-stats-grid">
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="totalProperties">0</div>
+              <div class="crm-stat-label">Total Imóveis</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="availableProperties">0</div>
+              <div class="crm-stat-label">Disponíveis</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="soldProperties">0</div>
+              <div class="crm-stat-label">Vendidos</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="avgPrice">R$ 0</div>
+              <div class="crm-stat-label">Preço Médio</div>
+            </div>
+          </div>
+
+          <div class="crm-search-container">
+            <div class="crm-search-grid">
+              <div class="crm-search-group">
+                <label class="crm-search-label">Tipo</label>
+                <select class="crm-search-select" id="propertyTypeFilter">
+                  <option value="">Todos</option>
+                  <option value="apartment">Apartamento</option>
+                  <option value="house">Casa</option>
+                  <option value="commercial">Comercial</option>
+                  <option value="land">Terreno</option>
+                </select>
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Status</label>
+                <select class="crm-search-select" id="propertyStatusFilter">
+                  <option value="">Todos</option>
+                  <option value="available">Disponível</option>
+                  <option value="sold">Vendido</option>
+                  <option value="reserved">Reservado</option>
+                  <option value="rented">Alugado</option>
+                </select>
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Preço Mínimo</label>
+                <input type="number" class="crm-search-input" id="minPriceFilter" placeholder="R$ 0">
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Preço Máximo</label>
+                <input type="number" class="crm-search-input" id="maxPriceFilter" placeholder="R$ 999999">
+              </div>
+            </div>
+            <div class="crm-search-actions">
+              <button class="crm-btn" onclick="searchProperties()">🔍 Buscar</button>
+              <button class="crm-btn secondary" onclick="clearPropertyFilters()">🗑️ Limpar</button>
+              <button class="crm-btn success" onclick="showPropertyModal()">➕ Novo Imóvel</button>
+            </div>
+          </div>
+
+          <div class="crm-section">
+            <h2 class="crm-section-title">📋 Lista de Imóveis</h2>
+            <div id="propertiesList">
+              <!-- Properties will be rendered here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clients Section -->
+      <section id="clientsSection" class="content-section" style="display: none;">
+        <div class="crm-container">
+          <div class="crm-header">
+            <h1 class="crm-title">👥 Gestão de Clientes</h1>
+            <p class="crm-subtitle">Controle completo do relacionamento com clientes</p>
+          </div>
+
+          <div class="crm-stats-grid">
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="totalClients">0</div>
+              <div class="crm-stat-label">Total Clientes</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="activeClients">0</div>
+              <div class="crm-stat-label">Ativos</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="leadClients">0</div>
+              <div class="crm-stat-label">Prospects</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="avgBudget">R$ 0</div>
+              <div class="crm-stat-label">Orçamento Médio</div>
+            </div>
+          </div>
+
+          <div class="crm-search-container">
+            <div class="crm-search-grid">
+              <div class="crm-search-group">
+                <label class="crm-search-label">Status</label>
+                <select class="crm-search-select" id="clientStatusFilter">
+                  <option value="">Todos</option>
+                  <option value="lead">Prospect</option>
+                  <option value="active">Ativo</option>
+                  <option value="visiting">Visitando</option>
+                  <option value="negotiating">Negociando</option>
+                </select>
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Fonte</label>
+                <select class="crm-search-select" id="clientSourceFilter">
+                  <option value="">Todas</option>
+                  <option value="website">Website</option>
+                  <option value="social_media">Redes Sociais</option>
+                  <option value="referral">Indicação</option>
+                  <option value="portal">Portal Imobiliário</option>
+                </select>
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Nome</label>
+                <input type="text" class="crm-search-input" id="clientNameFilter" placeholder="Buscar por nome...">
+              </div>
+              <div class="crm-search-group">
+                <label class="crm-search-label">Orçamento Mínimo</label>
+                <input type="number" class="crm-search-input" id="minBudgetFilter" placeholder="R$ 0">
+              </div>
+            </div>
+            <div class="crm-search-actions">
+              <button class="crm-btn" onclick="searchClients()">🔍 Buscar</button>
+              <button class="crm-btn secondary" onclick="clearClientFilters()">🗑️ Limpar</button>
+              <button class="crm-btn success" onclick="showClientModal()">➕ Novo Cliente</button>
+            </div>
+          </div>
+
+          <div class="crm-section">
+            <h2 class="crm-section-title">👥 Lista de Clientes</h2>
+            <div id="clientsList">
+              <!-- Clients will be rendered here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visits Section -->
+      <section id="visitsSection" class="content-section" style="display: none;">
+        <div class="crm-container">
+          <div class="crm-header">
+            <h1 class="crm-title">📅 Gestão de Visitas</h1>
+            <p class="crm-subtitle">Agendamento e controle de visitas aos imóveis</p>
+          </div>
+
+          <div class="crm-stats-grid">
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="totalVisits">0</div>
+              <div class="crm-stat-label">Total Visitas</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="todayVisits">0</div>
+              <div class="crm-stat-label">Visitas Hoje</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="weekVisits">0</div>
+              <div class="crm-stat-label">Visitas Semana</div>
+            </div>
+            <div class="crm-stat-card">
+              <div class="crm-stat-value" id="completedVisits">0</div>
+              <div class="crm-stat-label">Realizadas</div>
+            </div>
+          </div>
+
+          <div class="crm-controls">
+            <button class="crm-btn success" onclick="showVisitModal()">➕ Agendar Visita</button>
+            <button class="crm-btn" onclick="showVisitCalendar()">📆 Ver Calendário</button>
+            <button class="crm-btn secondary" onclick="exportVisits()">📤 Exportar</button>
+          </div>
+
+          <div class="crm-section">
+            <h2 class="crm-section-title">📅 Próximas Visitas</h2>
+            <div id="visitsList">
+              <!-- Visits will be rendered here -->
             </div>
           </div>
         </div>
@@ -803,6 +1006,8 @@
   <script src="assets/js/lazy-loader.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/app-functions.js"></script>
+  <script src="assets/js/crm-system.js"></script>
+  <script src="assets/js/crm-integration.js"></script>
   
   <!-- Security Check - Enhanced Firefox Extension Protection -->
   <script>
