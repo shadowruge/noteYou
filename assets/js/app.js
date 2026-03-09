@@ -1216,6 +1216,7 @@ window.showCreateBoardModal = showCreateBoardModal;
 window.showCreateTaskModal = showCreateTaskModal;
 window.showCreateNoteModal = showCreateNoteModal;
 window.closeModal = closeModal;
+window.showToast = showToast;
 window.createBoard = createBoard;
 window.createTask = createTask;
 window.createNote = createNote;

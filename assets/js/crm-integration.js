@@ -461,23 +461,7 @@ function clearClientFilters() {
     updateClientsDisplay();
 }
 
-// Modal functions (placeholders for now)
-function showPropertyModal(propertyId = null) {
-    // TODO: Implement property modal
-    showToast('Imóveis', 'Modal de imóveis em desenvolvimento', '🏠', 'info');
-}
-
-function showClientModal(clientId = null) {
-    // TODO: Implement client modal
-    showToast('Clientes', 'Modal de clientes em desenvolvimento', '👥', 'info');
-}
-
-function showVisitModal(visitId = null) {
-    // TODO: Implement visit modal
-    showToast('Visitas', 'Modal de visitas em desenvolvimento', '📅', 'info');
-}
-
-// Action functions (placeholders for now)
+// Action functions
 function editProperty(propertyId) {
     showPropertyModal(propertyId);
 }

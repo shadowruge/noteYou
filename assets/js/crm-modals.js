@@ -1,5 +1,39 @@
 // ===== MODAIS DO CRM =====
 
+// Variável global para dados do CRM (compatibilidade)
+let crmData = {
+  properties: {},
+  clients: {},
+  visits: {}
+};
+
+// Função para salvar dados do CRM (compatibilidade)
+function saveCRMData() {
+  try {
+    // Salvar no localStorage
+    localStorage.setItem('noteyou_crm_data', JSON.stringify(crmData));
+    console.log('✅ Dados do CRM salvos com sucesso');
+  } catch (error) {
+    console.error('❌ Erro ao salvar dados do CRM:', error);
+  }
+}
+
+// Função para carregar dados do CRM (compatibilidade)
+function loadCRMData() {
+  try {
+    const savedData = localStorage.getItem('noteyou_crm_data');
+    if (savedData) {
+      crmData = JSON.parse(savedData);
+      console.log('✅ Dados do CRM carregados com sucesso');
+    }
+  } catch (error) {
+    console.error('❌ Erro ao carregar dados do CRM:', error);
+  }
+}
+
+// Carregar dados ao iniciar
+loadCRMData();
+
 // Modal de Imóveis
 function showPropertyModal(propertyId = null) {
   const modal = document.getElementById('propertyModal');
@@ -355,7 +389,35 @@ function scheduleClientVisit(clientId) {
   }, 100);
 }
 
-// Exportar funções para uso global
+// Funções para renderizar dados (compatibilidade)
+function renderProperties() {
+  // Atualizar display de propriedades se existir
+  const propertiesContainer = document.getElementById('propertiesContainer');
+  if (propertiesContainer) {
+    // Implementar renderização básica
+    console.log('🔄 Renderizando propriedades...');
+  }
+}
+
+function renderClients() {
+  // Atualizar display de clientes se existir
+  const clientsContainer = document.getElementById('clientsContainer');
+  if (clientsContainer) {
+    // Implementar renderização básica
+    console.log('🔄 Renderizando clientes...');
+  }
+}
+
+function renderVisits() {
+  // Atualizar display de visitas se existir
+  const visitsContainer = document.getElementById('visitsContainer');
+  if (visitsContainer) {
+    // Implementar renderização básica
+    console.log('🔄 Renderizando visitas...');
+  }
+}
+
+// Exportar funções para uso global - GARANTIR QUE SEJAM AS ÚLTIMAS A SEREM DEFINIDAS
 window.showPropertyModal = showPropertyModal;
 window.showClientModal = showClientModal;
 window.showVisitModal = showVisitModal;
@@ -370,3 +432,18 @@ window.deleteClient = deleteClient;
 window.deleteVisit = deleteVisit;
 window.schedulePropertyVisit = schedulePropertyVisit;
 window.scheduleClientVisit = scheduleClientVisit;
+window.renderProperties = renderProperties;
+window.renderClients = renderClients;
+window.renderVisits = renderVisits;
+window.crmData = crmData;
+window.saveCRMData = saveCRMData;
+window.loadCRMData = loadCRMData;
+
+// Forçar redefinição das funções caso tenham sido sobrescritas
+setTimeout(() => {
+  console.log('🔧 Redefinindo funções dos modais CRM...');
+  window.showPropertyModal = showPropertyModal;
+  window.showClientModal = showClientModal;
+  window.showVisitModal = showVisitModal;
+  console.log('✅ Funções dos modais CRM redefinidas com sucesso!');
+}, 100);
