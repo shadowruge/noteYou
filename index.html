@@ -997,6 +997,350 @@
     </div>
   </div>
 
+  <!-- Property Modal -->
+  <div id="propertyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="propertyModalTitle">Cadastrar Imóvel</h2>
+        <button class="modal-close" onclick="closeModal('propertyModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="propertyForm" onsubmit="saveProperty(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="propertyType">Tipo</label>
+              <select id="propertyType" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="terreno">Terreno</option>
+                <option value="comercial">Comercial</option>
+                <option value="rural">Rural</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="propertyStatus">Status</label>
+              <select id="propertyStatus" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <option value="disponivel">Disponível</option>
+                <option value="alugado">Alugado</option>
+                <option value="vendido">Vendido</option>
+                <option value="manutencao">Em Manutenção</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="propertyTitle">Título</label>
+            <input 
+              type="text" 
+              id="propertyTitle" 
+              class="form-input" 
+              placeholder="Ex: Casa de 3 quartos no centro"
+              required
+            >
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="propertyPrice">Preço</label>
+              <input 
+                type="number" 
+                id="propertyPrice" 
+                class="form-input" 
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="propertyArea">Área (m²)</label>
+              <input 
+                type="number" 
+                id="propertyArea" 
+                class="form-input" 
+                placeholder="0"
+                min="1"
+                required
+              >
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="propertyBedrooms">Quartos</label>
+              <input 
+                type="number" 
+                id="propertyBedrooms" 
+                class="form-input" 
+                placeholder="0"
+                min="0"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="propertyBathrooms">Banheiros</label>
+              <input 
+                type="number" 
+                id="propertyBathrooms" 
+                class="form-input" 
+                placeholder="0"
+                min="0"
+                required
+              >
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="propertyAddress">Endereço</label>
+            <input 
+              type="text" 
+              id="propertyAddress" 
+              class="form-input" 
+              placeholder="Rua, número, bairro, cidade"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="propertyDescription">Descrição</label>
+            <textarea 
+              id="propertyDescription" 
+              class="form-input form-textarea" 
+              placeholder="Descreva as características do imóvel..."
+              rows="4"
+            ></textarea>
+          </div>
+          
+          <div class="form-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('propertyModal')">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Salvar Imóvel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Modal -->
+  <div id="clientModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="clientModalTitle">Cadastrar Cliente</h2>
+        <button class="modal-close" onclick="closeModal('clientModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="clientForm" onsubmit="saveClient(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="clientName">Nome Completo</label>
+              <input 
+                type="text" 
+                id="clientName" 
+                class="form-input" 
+                placeholder="João Silva"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientType">Tipo</label>
+              <select id="clientType" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <option value="comprador">Comprador</option>
+                <option value="locatario">Locatário</option>
+                <option value="investidor">Investidor</option>
+                <option value="ambos">Comprador/Locatário</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="clientEmail">Email</label>
+            <input 
+              type="email" 
+              id="clientEmail" 
+              class="form-input" 
+              placeholder="joao.silva@email.com"
+              required
+            >
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="clientPhone">Telefone</label>
+              <input 
+                type="tel" 
+                id="clientPhone" 
+                class="form-input" 
+                placeholder="(11) 98765-4321"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientWhatsApp">WhatsApp</label>
+              <input 
+                type="tel" 
+                id="clientWhatsApp" 
+                class="form-input" 
+                placeholder="(11) 98765-4321"
+              >
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="clientCPF">CPF</label>
+            <input 
+              type="text" 
+              id="clientCPF" 
+              class="form-input" 
+              placeholder="000.000.000-00"
+              maxlength="14"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="clientBudget">Orçamento (R$)</label>
+            <input 
+              type="number" 
+              id="clientBudget" 
+              class="form-input" 
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="clientPreferences">Preferências</label>
+            <textarea 
+              id="clientPreferences" 
+              class="form-input form-textarea" 
+              placeholder="Ex: Prefere imóveis com 2+ quartos, próxima ao metrô, com vaga..."
+              rows="3"
+            ></textarea>
+          </div>
+          
+          <div class="form-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('clientModal')">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Salvar Cliente
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visit Modal -->
+  <div id="visitModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="visitModalTitle">Agendar Visita</h2>
+        <button class="modal-close" onclick="closeModal('visitModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="visitForm" onsubmit="saveVisit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="visitType">Tipo</label>
+              <select id="visitType" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <option value="visita">Visita ao Imóvel</option>
+                <option value="reuniao">Reunião</option>
+                <option value="apresentacao">Apresentação</option>
+                <option value="negociacao">Negociação</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="visitStatus">Status</label>
+              <select id="visitStatus" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <option value="agendada">Agendada</option>
+                <option value="realizada">Realizada</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="remarcada">Remarcada</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="visitDate">Data</label>
+              <input 
+                type="date" 
+                id="visitDate" 
+                class="form-input" 
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="visitTime">Horário</label>
+              <input 
+                type="time" 
+                id="visitTime" 
+                class="form-input" 
+                required
+              >
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="visitProperty">Imóvel</label>
+              <select id="visitProperty" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <!-- Options will be populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="visitClient">Cliente</label>
+              <select id="visitClient" class="form-select form-input" required>
+                <option value="">Selecione...</option>
+                <!-- Options will be populated dynamically -->
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="visitLocation">Local de Encontro</label>
+            <input 
+              type="text" 
+              id="visitLocation" 
+              class="form-input" 
+              placeholder="Ex: Portaria do prédio, escritório, etc."
+            >
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="visitDescription">Descrição</label>
+            <textarea 
+              id="visitDescription" 
+              class="form-input form-textarea" 
+              placeholder="Detalhes da visita, pontos a abordar, documentos necessários..."
+              rows="4"
+            ></textarea>
+          </div>
+          
+          <div class="form-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('visitModal')">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Agendar Visita
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden file input for import -->
   <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
 
@@ -1007,6 +1351,7 @@
   <script src="assets/js/app.js"></script>
   <script src="assets/js/app-functions.js"></script>
   <script src="assets/js/crm-system.js"></script>
+  <script src="assets/js/crm-modals.js"></script>
   <script src="assets/js/crm-integration.js"></script>
   
   <!-- Security Check - Enhanced Firefox Extension Protection -->

@@ -1,5 +1,396 @@
 /* ===== ESTILOS ADICIONAIS PARA O NOVO LAYOUT ===== */
 
+/* ===== MODAIS DO CRM ===== */
+
+/* Form Row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Form Select */
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-background);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 1.5rem;
+}
+
+/* CRM Specific Styles */
+.crm-section {
+  padding: 2rem;
+}
+
+.crm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.crm-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.crm-controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.crm-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.crm-btn.primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.crm-btn.secondary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.crm-btn.success {
+  background: var(--success-color);
+  color: white;
+}
+
+.crm-btn.danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* CRM Search */
+.crm-search-section {
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.crm-search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.crm-search-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* CRM Tables */
+.crm-table-container {
+  background: var(--card-background);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.crm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.crm-table th {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.crm-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.crm-table tr:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.crm-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* CRM Cards */
+.crm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.crm-card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.crm-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.crm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.crm-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.crm-card-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.crm-card-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.crm-card-status.disponivel {
+  background: var(--success-color);
+  color: white;
+}
+
+.crm-card-status.alugado {
+  background: var(--primary-color);
+  color: white;
+}
+
+.crm-card-status.vendido {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.crm-card-status.manutencao {
+  background: var(--warning-color);
+  color: white;
+}
+
+.crm-card-body {
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.crm-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.crm-card-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.crm-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.crm-card-action {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.crm-card-action.edit {
+  background: var(--primary-color);
+  color: white;
+}
+
+.crm-card-action.delete {
+  background: var(--danger-color);
+  color: white;
+}
+
+.crm-card-action.schedule {
+  background: var(--success-color);
+  color: white;
+}
+
+/* CRM Stats */
+.crm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.crm-stat-card {
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.crm-stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.crm-stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Empty States */
+.crm-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.crm-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.crm-empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.crm-empty-description {
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Responsive CRM */
+@media (max-width: 768px) {
+  .crm-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .crm-controls {
+    justify-content: center;
+  }
+  
+  .crm-search-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .crm-table {
+    font-size: 0.9rem;
+  }
+  
+  .crm-table th,
+  .crm-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .crm-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .crm-card {
+    padding: 1rem;
+  }
+  
+  .crm-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .crm-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .crm-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .crm-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ===== PERFIL DO USUÁRIO ===== */
 /* ===== PROFILE STYLES ===== */
 .profile-grid {
   display: grid;
